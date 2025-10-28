@@ -1,0 +1,51 @@
+name: Build and Deploy to Yandex Cloud Storage
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Получаем код из репозитория
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Устанавливаем Node.js нужной версии
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # 3. Устанавливаем зависимости проекта
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Собираем приложение для продакшена (создается папка 'dist')
+      - name: Build application
+        run: npm run build
+
+      # 5. Устанавливаем официальный Yandex Cloud CLI
+      - name: Install Yandex Cloud CLI
+        uses: yc-actions/yc-cli-install@v2.2.0
+
+      # 6. Аутентификация в Yandex Cloud через сервисный аккаунт
+      - name: Authenticate in Yandex Cloud
+        run: |
+          yc config profile create sa-profile --key='${{ secrets.YC_SA_JSON_CREDENTIALS }}'
+          yc config set cloud-id $(yc config get cloud-id)
+          yc config set folder-id $(yc config get folder-id)
+
+      # 7. Синхронизируем файлы с бакетом Object Storage
+      - name: Sync files to Yandex Object Storage
+        env:
+          BUCKET_NAME: ${{ secrets.S3_BUCKET }}
+        run: |
+          yc storage bucket sync \
+            --endpoint-url https://storage.yandexcloud.net \
+            dist/ s3://${BUCKET_NAME}/ \
+            --delete
