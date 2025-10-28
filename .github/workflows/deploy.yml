@@ -49,5 +49,5 @@ jobs:
         run: |
           yc storage bucket sync \
             --endpoint-url https://storage.yandexcloud.net \
-            dist/ s3://${BUCKET_NAME}/ \
+            dist/ "s3://${BUCKET_NAME}/" \
             --delete
