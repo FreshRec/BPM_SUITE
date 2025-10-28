@@ -10,41 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Получаем код из репозитория
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Устанавливаем Node.js нужной версии
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      # 3. Устанавливаем зависимости проекта
       - name: Install dependencies
         run: npm install
 
-      # 4. Собираем приложение для продакшена (создается папка 'dist')
       - name: Build application
         run: npm run build
 
-      # 5. Устанавливаем Yandex Cloud CLI вручную
       - name: Install Yandex Cloud CLI
         run: curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
 
-      # 6. Аутентификация в Yandex Cloud по полному пути к CLI
-      - name: Authenticate in Yandex Cloud
-        run: |
-          echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > sa-key.json
-          $HOME/yandex-cloud/bin/yc config profile create sa-profile --service-account-key sa-key.json
-          $HOME/yandex-cloud/bin/yc config profile activate sa-profile
-          rm sa-key.json
-
-      # 7. Синхронизируем файлы с бакетом Object Storage по полному пути к CLI
-      - name: Sync files to Yandex Object Storage
+      - name: Authenticate and Sync to Yandex Object Storage
         env:
+          YC_SA_JSON_CREDENTIALS: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           BUCKET_NAME: ${{ secrets.S3_BUCKET }}
         run: |
+          # Create a temporary key file from secrets
+          echo "$YC_SA_JSON_CREDENTIALS" > sa-key.json
+          
+          # Get a temporary IAM token using the service account key.
+          # Export it so the next yc command can use it automatically.
+          export YC_TOKEN=$($HOME/yandex-cloud/bin/yc iam create-token --service-account-key sa-key.json)
+          
+          # Clean up the key file immediately for security
+          rm sa-key.json
+          
+          # Sync files using the IAM token for authentication
           $HOME/yandex-cloud/bin/yc storage bucket sync \
             --endpoint-url https://storage.yandexcloud.net \
             dist/ "s3://${BUCKET_NAME}/" \
