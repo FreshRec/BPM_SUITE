@@ -34,7 +34,7 @@ jobs:
           YC_SERVICE_ACCOUNT_KEY: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           BUCKET_NAME: ${{ secrets.S3_BUCKET }}
         run: |
-          yc storage object sync \
+          yc storage s3 sync \
             --endpoint-url https://storage.yandexcloud.net \
             dist/ "s3://${BUCKET_NAME}/" \
             --delete
