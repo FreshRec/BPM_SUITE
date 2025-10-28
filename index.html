@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BPM Suite | Калькулятор, Тюнер, Метроном</title>
+
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="Многофункциональное приложение для музыкантов, включающее в себя BPM-калькулятор с тап-темпо, точный метроном с визуальными подсказками и хроматический тюнер с пресетами для различных инструментов." />
+    <meta name="keywords" content="BPM, метроном, тюнер, калькулятор темпа, музыка, гитара, tap tempo, онлайн тюнер, онлайн метроном" />
+    <meta property="og:title" content="BPM Suite | Калькулятор, Тюнер, Метроном" />
+    <meta property="og:description" content="Многофункциональное приложение для музыкантов: BPM-калькулятор, метроном и тюнер." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0f172a"> <!-- slate-900 -->
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='none' stroke='%2322d3ee' stroke-width='6' d='M20 80 L50 20 L80 80 Z M20 80 H 80' stroke-linecap='round' stroke-linejoin='round'/><circle cx='50' cy='55' r='5' fill='%2322d3ee'/></svg>">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+      body {
+        overscroll-behavior: none;
+        font-family: 'Inter', sans-serif;
+      }
+      /* Custom styles for glowing effects */
+      .glowing-shadow-cyan {
+        box-shadow: 0 0 15px rgba(34, 211, 238, 0.4), 0 0 5px rgba(34, 211, 238, 0.6);
+      }
+      .glowing-shadow-green {
+        box-shadow: 0 0 20px rgba(74, 222, 128, 0.5), 0 0 8px rgba(74, 222, 128, 0.7);
+      }
+      .glowing-shadow-amber {
+         box-shadow: 0 0 20px rgba(251, 191, 36, 0.5), 0 0 8px rgba(251, 191, 36, 0.7);
+      }
+      .glowing-shadow-red {
+         box-shadow: 0 0 20px rgba(248, 113, 113, 0.5), 0 0 8px rgba(248, 113, 113, 0.7);
+      }
+      /* Custom slider styles */
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        background: transparent;
+        cursor: pointer;
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        background: #334155; /* slate-700 */
+        height: 0.5rem;
+        border-radius: 0.5rem;
+      }
+      input[type="range"]::-moz-range-track {
+        background: #334155;
+        height: 0.5rem;
+        border-radius: 0.5rem;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        margin-top: -4px;
+        height: 24px;
+        width: 12px;
+        background-color: #f8fafc; /* slate-50 */
+        border-radius: 4px;
+        border: 2px solid #475569; /* slate-600 */
+      }
+       input[type="range"]::-moz-range-thumb {
+        height: 24px;
+        width: 12px;
+        background-color: #f8fafc;
+        border-radius: 4px;
+        border: 2px solid #475569;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "vite": "https://aistudiocdn.com/vite@^7.1.11",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.0.4"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-900 text-slate-200">
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
