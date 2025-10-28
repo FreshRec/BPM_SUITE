@@ -24,17 +24,18 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Install Yandex Cloud CLI
-        run: |
-          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-          echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
-      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ru-central1 # Этот параметр обязателен, даже если не используется напрямую
+
       - name: Sync to Yandex Object Storage
         env:
-          YC_SERVICE_ACCOUNT_KEY: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           BUCKET_NAME: ${{ secrets.S3_BUCKET }}
         run: |
-          yc storage s3 sync \
+          aws s3 sync \
             --endpoint-url https://storage.yandexcloud.net \
             dist/ "s3://${BUCKET_NAME}/" \
-            --delete # Этот комментарий защитит команду от случайного текста
+            --delete
