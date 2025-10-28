@@ -34,7 +34,7 @@ jobs:
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
           echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
 
-      # 6. Аутентификация в Yandex Cloud (исправленный метод)
+      # 6. Аутентификация в Yandex Cloud
       - name: Authenticate in Yandex Cloud
         run: |
           echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > sa-key.json
@@ -42,7 +42,7 @@ jobs:
           yc config profile activate sa-profile
           rm sa-key.json
 
-      # 7. Синхронизируем файлы с бакетом Object Storage (исправленная команда)
+      # 7. Синхронизируем файлы с бакетом Object Storage
       - name: Sync files to Yandex Object Storage
         env:
           BUCKET_NAME: ${{ secrets.S3_BUCKET }}
