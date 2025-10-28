@@ -14,12 +14,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Устанавливаем Node.js нужной версии
+      # 2. Устанавливаем Node.js нужной версии (без кеширования)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
 
       # 3. Устанавливаем зависимости проекта
       - name: Install dependencies
