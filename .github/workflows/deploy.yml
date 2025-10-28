@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Устанавливаем Node.js нужной версии (без кеширования)
+      # 2. Устанавливаем Node.js нужной версии
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -28,20 +28,21 @@ jobs:
       - name: Build application
         run: npm run build
 
-      # 5. Устанавливаем Yandex Cloud CLI вручную (надежный метод)
+      # 5. Устанавливаем Yandex Cloud CLI вручную
       - name: Install Yandex Cloud CLI
         run: |
           curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
           echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
 
-      # 6. Аутентификация в Yandex Cloud через сервисный аккаунт
+      # 6. Аутентификация в Yandex Cloud (исправленный метод)
       - name: Authenticate in Yandex Cloud
         run: |
-          yc config profile create sa-profile --key='${{ secrets.YC_SA_JSON_CREDENTIALS }}'
-          yc config set cloud-id $(yc config get cloud-id)
-          yc config set folder-id $(yc config get folder-id)
+          echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > sa-key.json
+          yc config profile create sa-profile --service-account-key sa-key.json
+          yc config profile activate sa-profile
+          rm sa-key.json
 
-      # 7. Синхронизируем файлы с бакетом Object Storage
+      # 7. Синхронизируем файлы с бакетом Object Storage (исправленная команда)
       - name: Sync files to Yandex Object Storage
         env:
           BUCKET_NAME: ${{ secrets.S3_BUCKET }}
