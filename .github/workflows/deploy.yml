@@ -25,25 +25,16 @@ jobs:
         run: npm run build
 
       - name: Install Yandex Cloud CLI
-        run: curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-
-      - name: Authenticate and Sync to Yandex Object Storage
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+          echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
+      
+      - name: Sync to Yandex Object Storage
         env:
-          YC_SA_JSON_CREDENTIALS: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          YC_SERVICE_ACCOUNT_KEY: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           BUCKET_NAME: ${{ secrets.S3_BUCKET }}
         run: |
-          # Create a temporary key file from secrets
-          echo "$YC_SA_JSON_CREDENTIALS" > sa-key.json
-          
-          # Get a temporary IAM token using the service account key.
-          # Export it so the next yc command can use it automatically.
-          export YC_TOKEN=$($HOME/yandex-cloud/bin/yc iam create-token --service-account-key sa-key.json)
-          
-          # Clean up the key file immediately for security
-          rm sa-key.json
-          
-          # Sync files using the IAM token for authentication
-          $HOME/yandex-cloud/bin/yc storage bucket sync \
+          yc storage bucket sync \
             --endpoint-url https://storage.yandexcloud.net \
             dist/ "s3://${BUCKET_NAME}/" \
             --delete
