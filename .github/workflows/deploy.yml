@@ -30,24 +30,22 @@ jobs:
 
       # 5. Устанавливаем Yandex Cloud CLI вручную
       - name: Install Yandex Cloud CLI
-        run: |
-          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-          echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
+        run: curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
 
-      # 6. Аутентификация в Yandex Cloud
+      # 6. Аутентификация в Yandex Cloud по полному пути к CLI
       - name: Authenticate in Yandex Cloud
         run: |
           echo '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > sa-key.json
-          yc config profile create sa-profile --service-account-key sa-key.json
-          yc config profile activate sa-profile
+          $HOME/yandex-cloud/bin/yc config profile create sa-profile --service-account-key sa-key.json
+          $HOME/yandex-cloud/bin/yc config profile activate sa-profile
           rm sa-key.json
 
-      # 7. Синхронизируем файлы с бакетом Object Storage
+      # 7. Синхронизируем файлы с бакетом Object Storage по полному пути к CLI
       - name: Sync files to Yandex Object Storage
         env:
           BUCKET_NAME: ${{ secrets.S3_BUCKET }}
         run: |
-          yc storage bucket sync \
+          $HOME/yandex-cloud/bin/yc storage bucket sync \
             --endpoint-url https://storage.yandexcloud.net \
             dist/ "s3://${BUCKET_NAME}/" \
             --delete
