@@ -37,4 +37,4 @@ jobs:
           yc storage s3 sync \
             --endpoint-url https://storage.yandexcloud.net \
             dist/ "s3://${BUCKET_NAME}/" \
-            --delete
+            --delete # Этот комментарий защитит команду от случайного текста
